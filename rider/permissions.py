@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 class IsAdminUserRole(permissions.BasePermission):
     def has_permission(self, request, view): # added user authentication
         if not request.user.is_authenticated:
-            logger.warning("Error: User not authenticated.")
+            logger.error("Error: User not authenticated.")
             return False
         
         try:

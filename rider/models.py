@@ -30,6 +30,7 @@ class Ride(models.Model):
     id_driver = models.ForeignKey('User', on_delete=models.CASCADE, related_name='driver')
     pickup_latitude = models.FloatField()
     pickup_longitude = models.FloatField()
+    pickup_distance = models.FloatField(default=0) # added to track distance
     dropoff_latitude = models.FloatField()
     dropoff_longitude = models.FloatField()
     pickup_time = models.DateTimeField()
