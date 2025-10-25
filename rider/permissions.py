@@ -1,4 +1,5 @@
 import logging
+
 from rest_framework import permissions
 from .models import User
 
@@ -6,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 class IsAdminUserRole(permissions.BasePermission):
-    def has_permission(self, request, view): # added user authentication
+    def has_permission(self, request, view):
         if not request.user.is_authenticated:
             logger.error("Error: User not authenticated.")
             return False
