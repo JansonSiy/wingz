@@ -1,10 +1,12 @@
 import logging
 
+from django.db.models import Prefetch
 from django_filters.rest_framework import DjangoFilterBackend
+from django.utils import timezone
 from rest_framework import viewsets, filters
 from .models import User, Ride, RideEvent
-from .serializers import UserSerializer, RideSerializer, RideEventSerializer
 from .permissions import IsAdminUserRole
+from .serializers import UserSerializer, RideSerializer, RideEventSerializer
 from .utils import calculate_pickup_distance
 
 logger = logging.getLogger(__name__)
@@ -28,6 +30,15 @@ class RideViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         queryset = super().get_queryset().filter(status='pickup')
+
+        now = timezone.now()
+        last_24_hours = now - timezone.timedelta(hours=24)
+        queryset = queryset.prefetch_related(
+            Prefetch(
+                'rideevent_set',
+                queryset=RideEvent.objects.filter(created_at__gte=last_24_hours)
+            )
+        )
 
         latitude = self.request.query_params.get('latitude')
         longitude = self.request.query_params.get('longitude')
