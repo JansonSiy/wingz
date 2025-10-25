@@ -22,23 +22,23 @@ class RideViewSet(viewsets.ModelViewSet):
     queryset = Ride.objects.all()
     serializer_class = RideSerializer
     permission_classes = [IsAdminUserRole]
-
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['status', 'id_rider__email']
     ordering_fields = ['pickup_time', 'pickup_distance']
     ordering = ['pickup_time']
     
     def get_queryset(self):
-        queryset = super().get_queryset().filter(status='pickup')
-
         now = timezone.now()
         last_24_hours = now - timezone.timedelta(hours=24)
-        queryset = queryset.prefetch_related(
-            Prefetch(
-                'rideevent_set',
-                queryset=RideEvent.objects.filter(created_at__gte=last_24_hours)
+
+        queryset = super().get_queryset().filter(status='pickup') \
+            .select_related('id_rider', 'id_driver') \
+            .prefetch_related(
+                Prefetch(
+                    'rideevent_set',
+                    queryset=RideEvent.objects.filter(created_at__gte=last_24_hours)
+                )
             )
-        )
 
         latitude = self.request.query_params.get('latitude')
         longitude = self.request.query_params.get('longitude')
@@ -61,6 +61,7 @@ class RideViewSet(viewsets.ModelViewSet):
                 pass
 
         return queryset
+
 
 class RideEventViewSet(viewsets.ModelViewSet):
     queryset = RideEvent.objects.all()
