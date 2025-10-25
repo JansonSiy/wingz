@@ -24,8 +24,5 @@ class RideSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_todays_ride_events(self, ride):
-        now = timezone.now()
-        last_24_hours = now - timezone.timedelta(hours=24)
-        events = ride.rideevent_set.filter(created_at__gte=last_24_hours)
-
+        events = ride.rideevent_set.all()
         return RideEventSerializer(events, many=True).data
