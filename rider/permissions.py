@@ -2,7 +2,7 @@ from rest_framework import permissions
 from .models import User
 
 class IsAdminUserRole(permissions.BasePermission):
-    def has_permission(self, request, view):
+    def has_permission(self, request, view): # added user authentication
         if not request.user.is_authenticated:
             return False
         

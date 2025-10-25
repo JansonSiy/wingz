@@ -7,14 +7,15 @@ class User(models.Model):
         ('driver', 'Driver'),
     ]
 
-    role = models.CharField(max_length=255, choices=ROLE_CHOICES)
+    role = models.CharField(max_length=255, choices=ROLE_CHOICES) # implemented choices
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    email = models.EmailField(max_length=255, unique=True)
+    email = models.EmailField(max_length=255, unique=True) # better EmailField than CharField
     phone_number = models.CharField(max_length=255, unique=True)
+    # active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name} ({self.role})'
+        return f'{self.first_name} {self.last_name} ({self.role})' # added this so it's readable in the admin
 
 
 class Ride(models.Model):
@@ -24,8 +25,8 @@ class Ride(models.Model):
         ('dropoff', 'Dropoff'),
     ]
 
-    status = models.CharField(max_length=255, choices=STATUS_CHOICES, default='pickup')
-    id_rider = models.ForeignKey('User', on_delete=models.CASCADE, related_name='rider')
+    status = models.CharField(max_length=255, choices=STATUS_CHOICES, default='pickup') # implement choices
+    id_rider = models.ForeignKey('User', on_delete=models.CASCADE, related_name='rider') # implement on_delete=models.CASCADE, makes no sense to have rides if user has been deleted
     id_driver = models.ForeignKey('User', on_delete=models.CASCADE, related_name='driver')
     pickup_latitude = models.FloatField()
     pickup_longitude = models.FloatField()
