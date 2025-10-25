@@ -12,6 +12,7 @@ class RideViewSet(viewsets.ModelViewSet):
     queryset = Ride.objects.all()
     serializer_class = RideSerializer
     permission_classes = [IsAdminUserRole]
+    filterset_fields = ['status', 'id_rider__email']
 
 class RideEventViewSet(viewsets.ModelViewSet):
     queryset = RideEvent.objects.all()
